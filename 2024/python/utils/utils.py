@@ -16,3 +16,12 @@ def read_file_two_cols(file_path):
             left.append(pairs[0])
             right.append(pairs[1])
     return left, right
+
+def read_file_two_d_array(file_path):
+
+    puzzle_matrix: list[list[str]] = []
+    with open(file_path, 'r') as file:
+        for line in file:
+            curr_line = list(line.rstrip())
+            puzzle_matrix.append(curr_line)
+    return puzzle_matrix

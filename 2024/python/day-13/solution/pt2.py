@@ -1,12 +1,5 @@
 # Approach
 
-# For each line find all combos of divide & subtract actions
-# Stop this path if
-# any division that isn't an int
-# any subtraction that goes negative
-# doesn't end
-# 
-
 import re
 
 def process_button(curr_line: str):

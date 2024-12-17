@@ -51,7 +51,7 @@ def read_file_two_d_array(file_path):
     return warehouse, robot_location, instructions
 
 def get_boxes(rows_of_boxes: list[list[dict[str, int]]], step: int, warehouse: list[list[str]]):
-    print('get boxes step', step)
+    # print('get boxes step', step)
     all_boxes = rows_of_boxes
     next_row_box_cols = set()
     previous_row = rows_of_boxes[-1]
@@ -86,15 +86,25 @@ def get_boxes(rows_of_boxes: list[list[dict[str, int]]], step: int, warehouse: l
 
 def move_boxes(rows_of_boxes: list[list[dict[str, int]]], step: int, warehouse: list[list[str]]):
 
+    while len(rows_of_boxes) > 0:
+        row_to_move = rows_of_boxes.pop()
+        for box in row_to_move:
+            box_r = box['r']
+            box_c = box['c']
+            warehouse[box_r + step][box_c] = '['
+            warehouse[box_r + step][box_c+1] = ']'
+            warehouse[box_r][box_c] = '.'
+            warehouse[box_r][box_c+1] = '.'
+
     return warehouse
 
 
 def process_instructions(warehouse: list[list[str]], robot_location: dict[str, int], instructions: list[str]):
 
     for instruction_set in instructions:
-        print('instruction_set', instruction_set)
+        # print('instruction_set', instruction_set)
         for instruction in instruction_set:
-            print('processing: ', instruction)
+            # print('processing: ', instruction)
             increment = DIRECTION_INCREMENTS[DIRECTIONS[instruction]]
 
             next_row = robot_location['row'] + increment[0]
@@ -107,7 +117,7 @@ def process_instructions(warehouse: list[list[str]], robot_location: dict[str, i
             next_item = warehouse[next_row][next_col]
             # print('next_item', next_item)
             if next_item == '#':
-                print('blocked no change')
+                # print('blocked no change')
                 continue
             if next_item == '.':
                 warehouse[robot_location['row']][robot_location['col']] = '.'
@@ -117,7 +127,7 @@ def process_instructions(warehouse: list[list[str]], robot_location: dict[str, i
                 }
                 warehouse[robot_location['row']][robot_location['col']] = '@'
             else:
-                print('deal w/ boxes')
+                # print('deal w/ boxes')
                 if instruction in ['<', '>']:
                     # print('l/r boxes, keep going until wall or space')
                     while next_item != '#' and next_item != ".":
@@ -145,51 +155,20 @@ def process_instructions(warehouse: list[list[str]], robot_location: dict[str, i
 
                     is_blocked, all_boxes = get_boxes(rows_of_boxes, step, warehouse)
 
-                    print('is blocked: ', is_blocked)
+                    # print('is blocked: ', is_blocked)
 
                     if not is_blocked:
-                        print('move boxes', all_boxes)
+                        # print('move boxes', all_boxes)
                         warehouse = move_boxes(all_boxes, step, warehouse)
                         warehouse[robot_location['row']][robot_location['col']] = '.'
                         robot_location = {
-                            'row': next_row,
-                            'col': robot_location['col'] + step
+                            'row': robot_location['row'] + step,
+                            'col': robot_location['col']
                         }
                         warehouse[robot_location['row']][robot_location['col']] = '@'
 
-                    # #move all the boxes
-                    # print('rows of boxes to move: ', rows_of_boxes_to_move)
-                    # rows_of_boxes_to_move.pop()
-                    # while len(rows_of_boxes_to_move) > 0:
-                    #     row_to_process = rows_of_boxes_to_move.pop()
-
-                    #     # print('move boxes in this row', row_to_process)
-
-                    #     for box in row_to_process:
-                    #         box_r = box['r']
-                    #         box_c = box['c']
-                    #         warehouse[box_r - increment][box_c] = '['
-                    #         warehouse[box_r - increment][box_c + 1] = ']'
-                    #         warehouse[box_r][box_c] = '.' 
-                    #         warehouse[box_r][box_c+1] = '.' 
-                        
-                    #     # for i in range(robot_location['row'] - increment, next_row, -increment):
-                    #     #     warehouse[i][next_col] = warehouse[i + increment][next_col]
-                    #     #     robot_location = {
-                    #     #         'row': i,
-                    #     #         'col': next_col
-                    #     #     }
-                    # warehouse[robot_r][robot_c] = '.'
-                    # warehouse[robot_r - increment][robot_c] = '@'
-                    # robot_location['row'] = robot_r - increment
-                    # robot_location['col'] = robot_c
-                    # break
-
-            # next_row += increment[0]
-            # next_col += increment[1]
-            
-            for ware_house_line in warehouse:
-                print(''.join(ware_house_line))
+            # for ware_house_line in warehouse:
+            #     print(''.join(ware_house_line))
 
     return warehouse
 
@@ -204,9 +183,9 @@ def calc_box_coords(warehouse: list[list[str]]):
     return count
 
 
-warehouse, robot_location, instructions = read_file_two_d_array('../input/mini.txt')
+# warehouse, robot_location, instructions = read_file_two_d_array('../input/mini.txt')
 # warehouse, robot_location, instructions = read_file_two_d_array('../input/sample.txt')
-# warehouse, robot_location, instructions = read_file_two_d_array('../input/full.txt')
+warehouse, robot_location, instructions = read_file_two_d_array('../input/full.txt')
 
 # warehouse = [['#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#'],
 # ['#', '#', '[', ']', '.', '.', '[', ']', '.', '.', '.', '.', '[', ']', '.', '.', '[', ']', '#', '#'],
